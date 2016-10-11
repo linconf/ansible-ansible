@@ -1,0 +1,7 @@
+---
+
+#|  Default OS Variables
+
+ansible_role_package_name: 'ansible'
+
+

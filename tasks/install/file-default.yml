@@ -1,0 +1,5 @@
+---
+
+- name: install/file-default - Unsupported Distribution
+  fail: 
+    msg: 'OS Family: {{ ansible_os_family }} not supported for installation from file'

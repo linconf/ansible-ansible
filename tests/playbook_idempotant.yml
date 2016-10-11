@@ -1,0 +1,8 @@
+---
+- name: ansible - Testing
+  hosts: all
+  become: yes
+  roles:
+    - linconf.ansible
+  vars:
+    ansible_role_remote_port: '1234'

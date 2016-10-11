@@ -1,0 +1,6 @@
+---
+
+- name: install/package-default - Install Ansible
+  package: 
+    name: '{{ ansible_role_package_name }}'
+    state: installed

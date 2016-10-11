@@ -1,0 +1,26 @@
+---
+
+- name: install/package-Debian - Enable Backports
+  apt_repository:
+    repo: 'deb http://ftp.debian.org/debian {{ ansible_distribution_release }}-backports main'
+    state: present
+    filename: "{{ ansible_distribution_release }}_backports"
+  when: ansible_role_use_backports | bool
+
+- name: install/package-Debian - Update apt-cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: install/package-Debian - Install Ansible
+  apt: 
+    name: '{{ ansible_role_package_name }}'
+    state: installed
+  when: not ansible_role_use_backports | bool
+
+- name: install/package-Debian - Install Ansible from Backports
+  apt: 
+    name: '{{ ansible_role_package_name }}'
+    state: installed
+    default_release: '{{ ansible_distribution_release }}-backports'
+  when: ansible_role_use_backports | bool

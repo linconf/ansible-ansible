@@ -1,0 +1,17 @@
+---
+
+- name: install/package-Ubuntu - Add PPA
+  apt_repository:
+    repo: '{{ ansible_role_ppa }}'
+    state: present
+  when: ansible_role_use_ppa | bool
+
+- name: install/package-Ubuntu - Update apt-cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
+
+- name: install/package-Ubuntu - Install Ansible
+  apt: 
+    name: '{{ ansible_role_package_name }}'
+    state: installed

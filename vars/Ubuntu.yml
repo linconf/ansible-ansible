@@ -1,0 +1,31 @@
+---
+
+#|  Default OS Variables
+
+ansible_role_package_name: 'ansible'
+
+# If False and ansible_git_install==False, package installed from [universe]
+ansible_role_use_ppa: True
+ansible_role_ppa: 'ppa:ansible/ansible'
+
+
+#| Build from Source Variables
+ansible_role_build_deps:
+  - 'asciidoc'
+  - 'build-essential'
+  - 'cdbs'
+  - 'devscripts'
+  - 'debhelper'
+  - 'dpkg-dev'
+  - 'fakeroot'
+  - 'git'
+  - 'python-httplib2'
+  - 'python-jinja2'
+  - 'python-nose'
+  - 'python-passlib'
+  - 'python-paramiko'
+  - 'python-setuptools'
+  - 'python-support'
+  - 'python-yaml'
+  - 'sshpass'
+  - 'xmlto'

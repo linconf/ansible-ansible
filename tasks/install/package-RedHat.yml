@@ -1,0 +1,7 @@
+---
+
+- name: install/package-RedHat - Install Ansible
+  yum: 
+    name: '{{ ansible_role_package_name }}'
+    state: installed
+    enablerepo: 'epel'

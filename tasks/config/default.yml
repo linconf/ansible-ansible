@@ -1,0 +1,9 @@
+---
+
+- name: config/default - Configure /etc/ansible/ansible.cfg
+  template:
+    src: 'etc-ansible-ansible.cfg.j2'
+    dest: '/etc/ansible/ansible.cfg'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'

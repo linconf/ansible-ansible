@@ -1,0 +1,79 @@
+---
+
+- name: install/source-Debian - Install build dependencies
+  apt: 
+    name: '{{ item }}'
+    state: latest
+  with_flattened:
+    - '{{ ansible_role_build_deps }}'
+
+- name: install/source-Debian - Clone Ansible repository
+  git: 
+    repo: '{{ ansible_role_build_git_repo }}'
+    dest: '{{ ansible_role_build_path }}'
+    version: '{{ ansible_role_build_target_version }}'
+    update: yes
+  register: ansible_role_clone_status
+  become_user: '{{ ansible_role_build_user }}'
+
+- name: install/source-Debian - Remove previous Unstable Version
+  file:
+    src: '{{ item }}'
+    state: absent
+  register: ansible_role_build_unstable
+  with_fileglob: '{{ ansible_role_build_path }}/deb-build/unstable/ansible_*.deb'
+  when: ansible_role_clone_status is defined and 
+        ansible_role_clone_status.changed == True
+
+- name: install/source-Debian - Remove previous Stable Version
+  file:
+    src: '{{ item }}'
+    state: absent
+  register: ansible_role_build_unstable
+  with_fileglob: '{{ ansible_role_build_path }}/../ansible_*.deb'
+  when: ansible_role_clone_status is defined and 
+        ansible_role_clone_status.changed == True
+
+- name: install/source-Debian - Build Ansible package
+  command: 'make deb'
+  args:
+    chdir: '{{ ansible_role_build_path }}'
+  register: ansible_role_build_status
+  when: ansible_role_clone_status is defined and 
+        ansible_role_clone_status.changed == True
+  become_user: '{{ ansible_role_build_user }}'
+
+  #| Determine where the newly built *.deb file is
+
+- name: install/source-Debian - Check if Unstable Version
+  shell: 'ls -d {{ ansible_role_build_path }}/deb-build/unstable/ansible_*.deb'
+  register: ansible_role_build_unstable
+  when: ansible_role_build_status is defined and 
+        ansible_role_build_status.changed
+
+- name: install/source-Debian - Check if Stable Version
+  shell: 'ls -d {{ ansible_role_build_path }}/../ansible_*.deb'
+  register: ansible_role_build_stable
+  when: ansible_role_build_unstable is defined and
+        ansible_role_build_unstable.stdout == ''
+
+  #| Fail the task if the newly built *.deb file cannot be found
+
+- name: install/source-default - Unable to find package file for installation
+  fail: 
+    msg: 'Unable to locate *.deb package'
+  when: ansible_role_build_unstable is defined and ansible_role_build_stable is defined and
+        ansible_role_build_unstable.stdout == '' and ansible_role_build_stable.stdout == ''
+
+- name: install/source-Debian - Install Unstable Ansible
+  apt:
+    deb: '{{ ansible_role_build_unstable.stdout }}'
+  when: ansible_role_build_unstable is defined and 
+        ansible_role_build_unstable.changed
+
+- name: install/source-Debian - Install Stable Ansible
+  apt:
+    deb: '{{ ansible_role_build_stable.stdout }}'
+  when: ansible_role_build_stable is defined and 
+        ansible_role_build_stable.changed
+

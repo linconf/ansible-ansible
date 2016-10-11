@@ -1,0 +1,61 @@
+---
+
+#| Set to `False` to disable the role
+
+ansible_role_enabled: True
+
+
+#|
+#| Settings
+#|
+
+# Set to False to use default Ansible options
+ansible_role_configure_ansible: True
+
+# See /etc/ansible/ansible.cfg for an explination of available options
+# or: https://github.com/ansible/ansible/blob/devel/examples/ansible.cfg
+ansible_role_config_hostfile: 'hosts/'
+ansible_role_config_forks: '5'
+ansible_role_remote_port: '22'
+ansible_role_config_gathering: 'smart'
+ansible_role_config_roles_path: [ '/etc/ansible/roles' ]
+ansible_role_config_host_key_checking: True
+ansible_role_config_ssh_timeout: '10'
+ansible_role_config_module_name: 'command'
+ansible_role_config_hash_behaviour: 'replace'
+ansible_role_config_private_key_file: ''
+ansible_role_config_vault_password_file: ''
+ansible_role_config_ansible_managed: 'Ansible managed: {file} on {host}'
+ansible_role_config_display_skipped_hosts: True
+ansible_role_config_system_warnings: True
+ansible_role_config_deprecation_warnings: True
+ansible_role_config_fact_caching: ''
+ansible_role_config_fact_caching_timeout: ''
+ansible_role_config_retry_files_enabled: False
+ansible_role_config_retry_files_save_path: '~/.ansible-retry'
+ansible_role_config_ssh_args: '-C -o ControlMaster=auto -o ControlPersist=60s'
+ansible_role_config_scp_if_ssh: True
+
+
+#|
+#| Installation Options
+#|
+
+# Installs from package manager by default
+ansible_role_install_from_file: False
+ansible_role_install_from_source: False
+
+#| Install from pre-compiled package file (example: files/Debian.deb)
+
+ansible_role_install_file_name: 'files/{{ ansible_distribution }}.deb'
+
+#| Build From Source
+
+ansible_role_build_git_repo: 'https://github.com/ansible/ansible.git'
+ansible_role_build_target_version: 'v2.1.2.0-1'
+ansible_role_build_user: '{{ ansible_ssh_user | default("root") }}'
+ansible_role_build_path: '/opt/ansible/src'
+
+ansible_role_install_method: '{{ "source" if (ansible_role_install_from_source | bool)
+                              else "file" if (ansible_role_install_from_file | bool)
+                              else "package" }}'
